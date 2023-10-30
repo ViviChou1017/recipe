@@ -1,0 +1,86 @@
+<script>
+import { Cropper } from "vue-advanced-cropper";
+import ExampleWrapper from "../components/ExampleWrapper.vue";
+import VerticalButtons from "../components/VerticalButtons.vue";
+import SquareButton from "../components/SquareButton.vue";
+
+export default {
+  components: {
+    Cropper,
+    ExampleWrapper,
+    VerticalButtons,
+    SquareButton,
+  },
+  data() {
+    return {
+      image: "sr/photos/avatar/asian-girl.png",
+      size: {
+        width: null,
+        height: null,
+      },
+    };
+  },
+  methods: {
+    flip(x, y) {
+      const { image } = this.$refs.cropper.getResult();
+      if (image.transforms.rotate % 180 !== 0) {
+        this.$refs.cropper.flip(!x, !y);
+      } else {
+        this.$refs.cropper.flip(x, y);
+      }
+    },
+    rotate(angle) {
+      this.$refs.cropper.rotate(angle);
+    },
+    download() {
+      const result = this.$refs.cropper.getResult().canvas.toDataURL();
+      const newTab = window.open();
+      newTab.document.body.innerHTML = `<img src="${result}"></img>`;
+    },
+    change(args) {
+      console.log(args);
+    },
+  },
+};
+</script>
+
+<template>
+  <example-wrapper
+    class="rotate-image-example"
+    href="https://github.com/advanced-cropper/vue-advanced-cropper/blob/master/example/docs/.vuepress/components/rotate-image-example.vue"
+  >
+    <cropper
+      ref="cropper"
+      class="cropper"
+      :src="image"
+      :transitions="true"
+      image-restriction="fit-area"
+      @change="change"
+    />
+    <vertical-buttons>
+      <square-button title="Flip Horizontal" @click="flip(true, false)">
+        <img :src="require('../assets/icons/flip-horizontal.svg')" />
+      </square-button>
+      <square-button title="Flip Vertical" @click="flip(false, true)">
+        <img :src="require('../assets/icons/flip-vertical.svg')" />
+      </square-button>
+      <square-button title="Rotate Clockwise" @click="rotate(90)">
+        <img :src="require('../assets/icons/rotate-clockwise.svg')" />
+      </square-button>
+      <square-button title="Rotate Counter-Clockwise" @click="rotate(-90)">
+        <img :src="require('../assets/icons/rotate-counter-clockwise.svg')" />
+      </square-button>
+      <square-button title="Download" @click="download()">
+        <img :src="require('../assets/icons/download.svg')" />
+      </square-button>
+    </vertical-buttons>
+  </example-wrapper>
+</template>
+
+<style lang="scss">
+.rotate-image-example {
+  .cropper {
+    max-height: 500px;
+  }
+}
+</style>
